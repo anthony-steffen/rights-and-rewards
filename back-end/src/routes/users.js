@@ -11,15 +11,25 @@ router.get('/', async (req, res) => {
   res.json(users);
 });
 
-router.post('/', async(req, res) => {
-    const newUser = await Usuario.create({
-        nome: req.body.nome,
-        email: req.body.email,
-        senha: req.body.senha
-    });
+router.post('/', async (req, res) => {
+  try {
+    const { nome, email, senha } = req.body;
+    
+    // Cria o novo usuário
+    const newUser = await Usuario.create({ nome, email, senha });
     res.status(201).json({
-      message:`usuário criado com ${newUser.id}, ${newUser.nome}, ${newUser.email}, ${newUser.senha}`
+      message: `Usuário criado com ID: ${newUser.id}, Nome: ${newUser.nome}, Email: ${newUser.email}`
     });
+  } catch (error) {
+    // Tratamento de erro de unicidade
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      const errorMessage = error.errors.map(e => e.message).join(', ');
+      return res.status(400).json({ error: errorMessage });
+    }
+    
+    // Tratamento de outros erros
+    res.status(500).json(error.message);
+  }
 });
 
 router.put('/:id', (req, res) => {
