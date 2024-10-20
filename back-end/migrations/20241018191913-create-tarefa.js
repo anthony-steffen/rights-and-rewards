@@ -9,13 +9,19 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      titulo: {
+        type: Sequelize.STRING
+      },
       descricao: {
         type: Sequelize.STRING
+      },
+      prazo: {
+        type: Sequelize.DATE
       },
       valor: {
         type: Sequelize.FLOAT
       },
-      status: {
+      done: {
         type: Sequelize.BOOLEAN
       },
     });
