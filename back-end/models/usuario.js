@@ -1,4 +1,7 @@
 'use strict';
+const {
+  Model
+} = require('sequelize');
 const bcrypt = require('bcryptjs');
 
 module.exports = (sequelize, DataTypes) => {
@@ -49,6 +52,15 @@ module.exports = (sequelize, DataTypes) => {
   // Método para validar a senha durante o login
   Usuario.prototype.validPassword = async function (senha) {
     return bcrypt.compare(senha, this.senha);
+  };
+
+  Usuario.associate = (models) => {
+    Usuario.belongsToMany(models.Tarefa, {
+      through: 'TarefaUsuario', // Nome da tabela intermediária
+      as: 'Tarefas', // Alias usado para acessar as tarefas do usuário
+      foreignKey: 'usuario_id', // Chave estrangeira referenciando o usuário
+      otherKey: 'tarefa_id' // Chave estrangeira referenciando a tarefa
+    });
   };
 
   return Usuario;
